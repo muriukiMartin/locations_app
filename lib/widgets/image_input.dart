@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ImageInput extends StatefulWidget {
   // const ImageInput({ Key? key }) : super(key: key);
@@ -11,13 +12,25 @@ class ImageInput extends StatefulWidget {
 class _ImageInputState extends State<ImageInput> {
   File _storedImage;
 
+  Future<void> _takePicture() async {
+    final imageFile = await ImagePicker().getImage(source: ImageSource.camera);
+    // final picker = ImagePicker();
+    // final imageFile = picker.getImage(
+    //   source: ImageSource.camera,
+    //   maxWidth: 600,
+    // );
+    setState(() {
+      _storedImage = File(imageFile.path);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Container(
           width: 200,
-          height: 100,
+          height: 150,
           decoration:
               BoxDecoration(border: Border.all(width: 1, color: Colors.grey)),
           child: _storedImage != null
@@ -26,7 +39,10 @@ class _ImageInputState extends State<ImageInput> {
                   fit: BoxFit.cover,
                   width: double.infinity,
                 )
-              : Text('No image picked', textAlign: TextAlign.center,),
+              : Text(
+                  'No image picked',
+                  textAlign: TextAlign.center,
+                ),
           alignment: Alignment.center,
         ),
         SizedBox(
@@ -37,7 +53,7 @@ class _ImageInputState extends State<ImageInput> {
           icon: Icon(Icons.camera),
           label: Text('Pick Image'),
           textColor: Theme.of(context).primaryColor,
-          onPressed: () {},
+          onPressed: _takePicture,
         )),
       ],
     );
